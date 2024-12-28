@@ -6,6 +6,7 @@
         "attackName" : ["Fire Bolt", "Artic Freeze"],
         "attackDmg" : [[1,8],[4,6]],
         "bonusDmg" : [[1,3],["none"]],
+        "descr" : "",
         "cost": 0
     },
     {
@@ -15,6 +16,7 @@
         "attackName" : ["Wisp Bolt", "Leech Health"],
         "attackDmg" : [[1,6],[4,10]],
         "bonusDmg" : [["none"],[0,1.1]],
+        "descr" : "",
         "cost": 0
     },
     {
@@ -24,6 +26,7 @@
         "attackName" : ["Dual Swipe", "Sweet Spot"],
         "attackDmg" : [[1,4],[8,12]],
         "bonusDmg" : [["none"],[1,3]],
+        "descr" : "",
         "cost": 0
     },
     {
@@ -33,6 +36,7 @@
         "attackName" : ["Basic Shot", "Stunning Shot"],
         "attackDmg" : [[1,6],[1,4]],
         "bonusDmg" : [["none"],["none"]],
+        "descr" : "",
         "cost": 0
     },
     {
@@ -42,6 +46,7 @@
         "attackName" : ["Basic Attack", "Shield Bash"],
         "attackDmg" : [[1,8],[1,4]],
         "bonusDmg" : [["none"],["none"]],
+        "descr" : "",
         "cost": 0
     },
     {
@@ -51,8 +56,49 @@
         "attackName" : ["Two-handed Swing", "Power Attack"],
         "attackDmg" : [[1,10],[10,20]],
         "bonusDmg" : [["none"],[1,3]],
+        "descr" : "",
         "cost": 0
     },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Pyro Staff",
+        "attackName" : ["Fire Bolt", "Conflagrate"],
+        "attackDmg" : [[1,8],[4,6]],
+        "bonusDmg" : [[1,3],[0.25,1]],
+        "descr" : "fires fire bolts to build up damage on enemy then when activate sets enemy ablaze per mark of fire for that many turns",
+        "cost": 10
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Hydro Staff",
+        "attackName" : ["Hyrdo Spray", "Glaciate"],
+        "attackDmg" : [[1,6],[4,10]],
+        "bonusDmg" : [[1],[0.25,1]],
+        "descr" : "sprays water causing minbor damage that when frozen causes major damage and holds enemy in stasis until it breaks free after certain amount of turns based on marks",
+        "cost": 10
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Dryad Staff",
+        "attackName" : ["Needle Spray", "Entangle"],
+        "attackDmg" : [[1,8],[4,6]],
+        "bonusDmg" : [[1,3],[0.25,1]],
+        "descr" : "sprays needles that clings to enemy, needles grow to pierce and restrict enemy based on needles attached for a set amount of turns equal to needles on enemy",
+        "cost": 10
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Lich Staff",
+        "attackName" : ["Acid Spray", "Life Steal"],
+        "attackDmg" : [[1,6],[4,10]],
+        "bonusDmg" : [[1],[0.25,1]],
+        "descr" : "sprays acid to expose skin, absorbs life essence to heal self from exposed skin",
+        "cost": 10
+    },    
     {
         "classRestrict" : ["rogue"],
         "type" : "Dual Wielding Daggers",
@@ -60,6 +106,7 @@
         "attackName" : ["Dual Swipe", "Sweet Spot"],
         "attackDmg" : [[2,5],[9,13]],
         "bonusDmg" : [["none"],[2,4]],
+        "descr" : "",
         "cost": 10
     },
     {
@@ -69,6 +116,7 @@
         "attackName" : ["Basic Shot", "Stunning Shot"],
         "attackDmg" : [[2,7],[1,5]],
         "bonusDmg" : [["none"],["none"]],
+        "descr" : "",
         "cost": 10
     }
 ]
