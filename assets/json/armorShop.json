@@ -1,6 +1,94 @@
 [
     {
-        "name": "",
-        "Deffense" : 0
+        "classRestrict" : ["mage","rogue","warrior"],
+        "type" : "Clothing",
+        "name": "Basic Clothing",
+        "Defense" : 0,
+        "mobility" : 3,
+        "cost": 0
+
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Clothing",
+        "name": "Apprentice Robe",
+        "Defense" : 1,
+        "mobility" : 3,
+        "cost":  10
+
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Clothing",
+        "name": "Mobility Robe",
+        "Defense" : 0,
+        "mobility" : 4,
+        "cost" : 20
+
+    }, 
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Clothing",
+        "name": "Bulwark Robe",
+        "Defense" : 2,
+        "mobility" : 2,
+        "cost" : 50
+
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Clothing",
+        "name": "Master Robe",
+        "Defense" : 5,
+        "mobility" : 5,
+        "cost" : 550
+
+    },
+    {
+        "classRestrict" : ["rogue","warrior"],
+        "type" : "Light Armor",
+        "name": "Leather Vest",
+        "Defense" : 3,
+        "mobility" : 2,
+        "cost" : 0
+
+    },
+    {
+        "classRestrict" : ["rogue","warrior"],
+        "type" : "Light Armor",
+        "name": "Leather Tunic",
+        "Defense" : 4,
+        "mobility" : 2,
+        "cost" : 10
+
+    },
+    {
+        "classRestrict" : ["warrior"],
+        "type" : "Generic Heavy Armor",
+        "name": "Iron Armor",
+        "Defense" : 4,
+        "mobility" : 0,
+        "cost" : 0
+
+    },
+    {
+        "classRestrict" : ["warrior"],
+        "type" : "Heavy Armor",
+        "name": "Chain Mail Armor",
+        "Defense" : 5,
+        "mobility" : 0,
+        "cost" : 10
+
+    },
+    {
+        "classRestrict" : ["warrior"],
+        "type" : "Heavy Armor",
+        "name": "Steel Armor",
+        "Defense" : 6,
+        "mobility" : 1,
+        "cost" : 100
+
     }
+
+    
 ]

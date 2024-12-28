@@ -1,5 +1,74 @@
 [
     {
-    
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Basic Elemental Staff",
+        "attackName" : ["Fire Bolt", "Artic Freeze"],
+        "attackDmg" : [[1,8],[4,6]],
+        "bonusDmg" : [[1,3],["none"]],
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Basic Nature Staff",
+        "attackName" : ["Wisp Bolt", "Leech Health"],
+        "attackDmg" : [[1,6],[4,10]],
+        "bonusDmg" : [["none"],[0,1.1]],
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["rogue"],
+        "type" : "Dual Wielding Daggers",
+        "name": "Basic Daggers",
+        "attackName" : ["Dual Swipe", "Sweet Spot"],
+        "attackDmg" : [[1,4],[8,12]],
+        "bonusDmg" : [["none"],[1,3]],
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["rogue"],
+        "type" : "Bow and Arrow",
+        "name": "Wooden Bow",
+        "attackName" : ["Basic Shot", "Stunning Shot"],
+        "attackDmg" : [[1,6],[1,4]],
+        "bonusDmg" : [["none"],["none"]],
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["warrior"],
+        "type" : "Shielded",
+        "name": "Stone Mace and Wooden Shield",
+        "attackName" : ["Basic Attack", "Shield Bash"],
+        "attackDmg" : [[1,8],[1,4]],
+        "bonusDmg" : [["none"],["none"]],
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["warrior"],
+        "type" : "Two-Handed",
+        "name": "Two-Handed Iron Sword",
+        "attackName" : ["Two-handed Swing", "Power Attack"],
+        "attackDmg" : [[1,10],[10,20]],
+        "bonusDmg" : [["none"],[1,3]],
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["rogue"],
+        "type" : "Dual Wielding Daggers",
+        "name": "+1 Daggers",
+        "attackName" : ["Dual Swipe", "Sweet Spot"],
+        "attackDmg" : [[2,5],[9,13]],
+        "bonusDmg" : [["none"],[2,4]],
+        "cost": 10
+    },
+    {
+        "classRestrict" : ["rogue"],
+        "type" : "Bow and Arrow",
+        "name": "Composite Bow",
+        "attackName" : ["Basic Shot", "Stunning Shot"],
+        "attackDmg" : [[2,7],[1,5]],
+        "bonusDmg" : [["none"],["none"]],
+        "cost": 10
     }
 ]
