@@ -1,17 +1,361 @@
 // imports of JSON
-import * as armorShop from '/assets/json/armorShop.json';
-import * as weaponShop from '/assets/json/weaponShop.json';
+// import armorShop from '/assets/json/armorShop.json' with { type: "json" };
+// import weaponShop from '/assets/json/weaponShop.json' with { type: "json" };
 
-//intialized variables and locate classes
-let viewPort, heroScreen, merchShop, battle, stats, ctext, player, enemyStats, opponent;
-let armorShop = armorShop;
-let weaponShop = weaponShop;
-viewPort= document.querySelector('.viewport');
-heroScreen = document.querySelector('.heroScreen');
-merchShop = document.querySelector('.merchantPortal');
-battle = document.querySelector('.battle');
-stats = document.querySelector('.stats');
+//create JS classes 
 
+class fighter {
+    #health = 100;
+    constructor(name){
+        this.name = name;
+    }
+    getHealth(){
+        return this.#health;
+    }
+    subHealth(val){
+        val = (val < 0)? 0: val;
+        this.#health -= val;
+        if (this.#health <=0){
+            this.#health = 0;
+            //winLoss function
+        }
+    }
+    addHealth(val){
+        this.#health = (this.#health + val > 100)? 100: this.#health + val;
+    }
+    getName(){
+        return this.name;
+    }
+}
+
+// hero class holds players values and extends fighter
+
+
+
+//intialized variables and locate html classes
+let viewPort, heroScreen, merchShop, battle, stats, ctext, player, enemyStats, opponent, displayPort, selection;
+let weaponShop = [
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Basic Elemental Staff",
+        "attackName" : ["Fire Bolt", "Artic Freeze"],
+        "attackDmg" : [[1,8],[4,6]],
+        "bonusDmg" : [[1,3],["none"]],
+        "descr" : "",
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Basic Nature Staff",
+        "attackName" : ["Wisp Bolt", "Leech Health"],
+        "attackDmg" : [[1,6],[4,10]],
+        "bonusDmg" : [["none"],[0,1.1]],
+        "descr" : "",
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["rogue"],
+        "type" : "Dual Wielding Daggers",
+        "name": "Basic Daggers",
+        "attackName" : ["Dual Swipe", "Sweet Spot"],
+        "attackDmg" : [[1,4],[8,12]],
+        "bonusDmg" : [["none"],[1,3]],
+        "descr" : "",
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["rogue"],
+        "type" : "Bow and Arrow",
+        "name": "Wooden Bow",
+        "attackName" : ["Basic Shot", "Stunning Shot"],
+        "attackDmg" : [[1,6],[1,4]],
+        "bonusDmg" : [["none"],["none"]],
+        "descr" : "",
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["warrior"],
+        "type" : "Shielded",
+        "name": "Stone Mace and Wooden Shield",
+        "attackName" : ["Basic Attack", "Shield Bash"],
+        "attackDmg" : [[1,8],[1,4]],
+        "bonusDmg" : [["none"],["none"]],
+        "descr" : "",
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["warrior"],
+        "type" : "Two-Handed",
+        "name": "Two-Handed Iron Sword",
+        "attackName" : ["Two-handed Swing", "Power Attack"],
+        "attackDmg" : [[1,10],[10,20]],
+        "bonusDmg" : [["none"],[1,3]],
+        "descr" : "",
+        "cost": 0
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Pyro Staff",
+        "attackName" : ["Fire Bolt", "Conflagrate"],
+        "attackDmg" : [[1,8],[4,6]],
+        "bonusDmg" : [[1,3],[0.25,1]],
+        "descr" : "fires fire bolts to build up damage on enemy then when activate sets enemy ablaze per mark of fire for that many turns",
+        "cost": 10
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Hydro Staff",
+        "attackName" : ["Hyrdo Spray", "Glaciate"],
+        "attackDmg" : [[1,6],[4,10]],
+        "bonusDmg" : [[1],[0.25,1]],
+        "descr" : "sprays water causing minbor damage that when frozen causes major damage and holds enemy in stasis until it breaks free after certain amount of turns based on marks",
+        "cost": 10
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Dryad Staff",
+        "attackName" : ["Needle Spray", "Entangle"],
+        "attackDmg" : [[1,8],[4,6]],
+        "bonusDmg" : [[1,3],[0.25,1]],
+        "descr" : "sprays needles that clings to enemy, needles grow to pierce and restrict enemy based on needles attached for a set amount of turns equal to needles on enemy",
+        "cost": 10
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Staff",
+        "name": "Lich Staff",
+        "attackName" : ["Acid Spray", "Life Steal"],
+        "attackDmg" : [[1,6],[4,10]],
+        "bonusDmg" : [[1],[0.25,1]],
+        "descr" : "sprays acid to expose skin, absorbs life essence to heal self from exposed skin",
+        "cost": 10
+    },    
+    {
+        "classRestrict" : ["rogue"],
+        "type" : "Dual Wielding Daggers",
+        "name": "+1 Daggers",
+        "attackName" : ["Dual Swipe", "Sweet Spot"],
+        "attackDmg" : [[2,5],[9,13]],
+        "bonusDmg" : [["none"],[2,4]],
+        "descr" : "",
+        "cost": 10
+    },
+    {
+        "classRestrict" : ["rogue"],
+        "type" : "Bow and Arrow",
+        "name": "Composite Bow",
+        "attackName" : ["Basic Shot", "Stunning Shot"],
+        "attackDmg" : [[2,7],[1,5]],
+        "bonusDmg" : [["none"],["none"]],
+        "descr" : "",
+        "cost": 10
+    }
+];
+let armorShop = [
+    {
+        "classRestrict" : ["mage","rogue","warrior"],
+        "type" : "Clothing",
+        "name": "Basic Clothing",
+        "Defense" : 0,
+        "mobility" : 3,
+        "cost": 0
+
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Clothing",
+        "name": "Apprentice Robe",
+        "Defense" : 1,
+        "mobility" : 3,
+        "cost":  10
+
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Clothing",
+        "name": "Mobility Robe",
+        "Defense" : 0,
+        "mobility" : 4,
+        "cost" : 20
+
+    }, 
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Clothing",
+        "name": "Bulwark Robe",
+        "Defense" : 2,
+        "mobility" : 2,
+        "cost" : 50
+
+    },
+    {
+        "classRestrict" : ["mage"],
+        "type" : "Clothing",
+        "name": "Master Robe",
+        "Defense" : 5,
+        "mobility" : 5,
+        "cost" : 550
+
+    },
+    {
+        "classRestrict" : ["rogue","warrior"],
+        "type" : "Light Armor",
+        "name": "Leather Vest",
+        "Defense" : 3,
+        "mobility" : 2,
+        "cost" : 0
+
+    },
+    {
+        "classRestrict" : ["rogue","warrior"],
+        "type" : "Light Armor",
+        "name": "Leather Tunic",
+        "Defense" : 4,
+        "mobility" : 2,
+        "cost" : 10
+
+    },
+    {
+        "classRestrict" : ["warrior"],
+        "type" : "Generic Heavy Armor",
+        "name": "Iron Armor",
+        "Defense" : 4,
+        "mobility" : 0,
+        "cost" : 0
+
+    },
+    {
+        "classRestrict" : ["warrior"],
+        "type" : "Heavy Armor",
+        "name": "Chain Mail Armor",
+        "Defense" : 5,
+        "mobility" : 0,
+        "cost" : 10
+
+    },
+    {
+        "classRestrict" : ["warrior"],
+        "type" : "Heavy Armor",
+        "name": "Steel Armor",
+        "Defense" : 6,
+        "mobility" : 1,
+        "cost" : 100
+
+    }
+
+    
+];
+
+function intitate(){
+    viewPort= document.querySelector('.viewport');
+    heroScreen = document.querySelector('.heroScreen');
+    merchShop = document.querySelector('.merchantPortal');
+    battle = document.querySelector('.battle');
+    stats = document.querySelector('.stats');
+    selection = document.querySelector('.selection')
+
+}
+
+function addButtons(id, txt, val){
+    let button = document.createElement("button")
+    let node = document.createTextNode(txt)
+    button.appendChild(node);
+    button.setAttribute("id", id);
+    button.setAttribute("value", val);
+    return button;
+}
+
+function createElement(el, c, i, txt, val){
+    let element = document.createElement(el);
+    if (c !== undefined){
+        element.classList.add(c);
+    }
+    if (i !== undefined){
+        element.setAttribute("id", i);
+    }
+    if (txt !== undefined){
+        let node = document.createTextNode(txt)
+        element.appendChild(node);
+    }
+    if(val !== undefined){
+        element.setAttribute("value", val);
+    }
+    return element;
+}
+
+//functions
 function gameStart(){
-    console.log("welcome");
+    intitate();
+    let par = createElement("p", "displayPort");
+    viewPort.appendChild(par).innerHTML = `Welcome noble champion to Battle Masters, a turn based game. This game will allow you to create a champion to do battle against various enemy types. You will have the option to choose the hero class as well as what gear they will use in combat. Prior to choosing who you shall battle. Defeating each enemy in battle grants you more gold to spend on upgrading your arsenal in the merchant shop. Please click on the button below to begin";`;
+    document.querySelector('#btn').classList.add("hidden")
+    let btn = createElement("button", undefined, "start", "Player Creation", "Player Creation")
+    viewPort.appendChild(btn).addEventListener("click", choosePlayer);
+
+   
+}
+
+function choosePlayer(){
+    document.querySelector('#start').remove();
+    document.querySelector('.userInterface').classList.remove('hidden');
+    if (true){
+        createHero();
+    }else{
+        loadSaves();
+    }
+    //load saved
+    //create new
+    displayPort = document.querySelector('.displayPort');
+    displayPort.innerHTML= `Please choose a Hero Class. You have three options to choose from: Warrior, Magician, and a Rogue. Please click on each option to view the class description and then click on visit shop to make your selection and advance to the merchant shop where you will choose your armaments.`;
+    
+}
+function loadSaves(){
+    console.log('Loading Saves...');
+
+}
+function createHero (){
+    let warBtn = createElement("button", "Warrior", "Warrior", "Warrior", "Warrior" );
+    let mageBtn = createElement("button", "Mage", "Mage", "Magician", "Mage" );
+    let rgBtn = createElement("button", "Rogue", "Rogue", "Rogue", "Rogue" )
+    selection.appendChild(warBtn).addEventListener("click", describeHero);
+    selection.appendChild(mageBtn).addEventListener("click", describeHero);
+    selection.appendChild(rgBtn).addEventListener("click", describeHero);
+}
+
+function describeHero (event){
+    let e = event.target;
+    let choice;
+    const heroDescription = 
+    [
+        {
+            "name" : "Warrior",
+            "desc" : `Warriors are the best at defense and can equip the heaviest of armors they can also provide some pretty good offensive damage with their weapons. They have 2 weapon proficiencies to choose from: One handed weapon and shield or a two-handed weapon. They can also wear all armor types.` 
+        },
+        {
+            "name" : "Mage",
+            "desc" : `Magicians don't wear armor, however, with the powerful magic they wield it sort of makes up for that minor indiscretion. They can specialize in one of two schools of magic:  elemental or nature to wreak havoc on their foes.` 
+        },
+        {
+            "name" : "Rogue",
+            "desc" : `Rogues provide a good balance between the two. They can don light armors, and They can specialize in dual daggers or bow and arrow to deliver precise attacks that may cause lethal damage to their opponents.` 
+        }
+
+    ]
+    for (let i = 0; i<heroDescription.length; i++){
+        if (heroDescription[i].name === e.value){
+            choice = i;
+            break;
+        }
+    }
+    displayPort.innerHTML = heroDescription[choice].desc;
+    let ontoSHop = createElement("button", )
+}
+
+function merchShop(){
+
 }

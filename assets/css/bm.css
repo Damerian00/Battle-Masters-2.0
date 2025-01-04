@@ -1,0 +1,37 @@
+.viewport, .userInterface{
+    border-radius: 15px;
+    min-height: 25vw;
+    border:1px solid black;
+    box-shadow: inset 5px 5px 15px 5px #000000;
+    display: flex;
+    position: relative;
+}
+.viewport{
+    display: flex;
+    position: relative;
+
+    p{
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 1.25em;
+        width: 100%;
+        text-align: center;
+        margin: 2em;
+        color: rgba(252, 235, 9, 0.829);
+        text-shadow: -4px 3px 2px #000000;
+    }
+
+    button{
+        border-radius: 25px;
+        height: 3vw;
+        width: 100%;
+        position: absolute;
+        bottom: 0px;
+        box-shadow: inset 5px 5px 15px 5px #000000;
+    }
+}
+.userInterface{
+   
+}
+.hidden{
+    visibility: hidden;
+}
