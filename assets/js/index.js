@@ -4,36 +4,33 @@
 
 //create JS classes 
 
-class fighter {
-    #health = 100;
-    constructor(name){
-        this.name = name;
-    }
-    getHealth(){
-        return this.#health;
-    }
-    subHealth(val){
-        val = (val < 0)? 0: val;
-        this.#health -= val;
-        if (this.#health <=0){
-            this.#health = 0;
-            //winLoss function
-        }
-    }
-    addHealth(val){
-        this.#health = (this.#health + val > 100)? 100: this.#health + val;
-    }
-    getName(){
-        return this.name;
-    }
-}
-
-// hero class holds players values and extends fighter
-
-
 
 //intialized variables and locate html classes
-let viewPort, heroScreen, merchShop, battle, stats, ctext, player, enemyStats, opponent, displayPort, selection;
+let viewPort, heroScreen, merchShop, battle, stats, ctext, player, enemyStats, opponent, displayPort, selection,tName, tClass, tWeap, tArm, tHealth;
+
+// Hero Object Template
+let heroSelected = {
+    name: 'Player',
+    class: '',
+    // currently equiped armor. armors have name;mobility;amount
+    currentArmor: {},
+    // list of armor objects player owns
+    armors: [],
+    //current weapon equipped by player. weapons have multiple attack options attackDmg : [min, max]; bonusDmg [min,max or none] calcDmg() returns totalDmg; bonus ? min, max : 0  
+    currentWeapon: [],
+    // list of weapon objects player owns
+    weapons : [],
+    health: 100
+}
+
+// Enemy Object Template
+let enemySelected= {
+    name:'',
+    dmg :[],
+    debuff: 0,
+    mobility : 0
+}
+
 let weaponShop = [
     {
         "classRestrict" : ["mage"],
@@ -250,7 +247,102 @@ let armorShop = [
 
     
 ];
+class fighter {
+    #health = 100;
+    constructor(name){
+        this.name = name;
+    }
+    getHealth(){
+        return this.#health;
+    }
+    subHealth(val){
+        val = (val < 0)? 0: val;
+        this.#health -= val;
+        if (this.#health <=0){
+            this.#health = 0;
+            //winLoss function
+        }
+    }
+    addHealth(val){
+        this.#health = (this.#health + val > 100)? 100: this.#health + val;
+    }
+    getName(){
+        return this.name;
+    }
+}
 
+// hero class holds players values and extends fighter
+class hero extends fighter {
+    dmgPerRound = 0;
+    totalDmg = 0;
+    bonusDmg = 0;
+    constructor (name,heroClass,armor,attack1, attack2){
+        super(name);
+        name = name;
+        this.heroClass = heroClass;
+        this.armor = armor;
+        this.attack1 = attack1;
+        this.attack2 = attack2;
+    }
+    getHeroClass(){
+        return this.heroClass;
+    }
+    getArmor(){
+        return this.armor.name;
+    }
+    addArmorDefense(amt){
+        this.armor.amount += amt;
+    }
+    calcDmg(attack){
+        if (disabled == true){
+            disabled = false;
+        }
+        if (attack == 'no'){
+            return;
+        }
+        this.dmgPerRound = 0;
+        if (attack == "a1"){
+            this.dmgPerRound = Math.floor(Math.random() *((this.attack1.attack.attackDmg[1] + 1)-this.attack1.attack.attackDmg[0]))+this.attack1.attack.attackDmg[0];
+            return this.dmgPerRound;
+        }else {
+            // toggles cooldown on special attacks
+            disabled = true;
+            this.dmgPerRound = Math.floor(Math.random() *((this.attack2.attack.attackDmg[1] + 1)-this.attack2.attack.attackDmg[0]))+this.attack2.attack.attackDmg[0];
+            return this.dmgPerRound; 
+        } 
+    }
+    calcBonus(){
+        if (this.attack1.attack.bonusDmg[0] !== "none"){
+            this.bonusDmg = Math.floor(Math.random() *((this.attack1.attack.bonusDmg[1]+ 1)-this.attack1.attack.bonusDmg[0]))+this.attack1.attack.bonusDmg[0]; 
+            this.totalDmg += this.bonusDmg;
+            return this.bonusDmg;
+        }else{
+            this.bonusDmg = Math.floor(Math.random() *((this.attack2.attack.bonusDmg[1] +1)-this.attack2.attack.bonusDmg[0]))+this.attack2.attack.bonusDmg[0];
+            this.totalDmg +=this.bonusDmg;
+            return this.bonusDmg;
+        }
+    }
+}
+
+// enemy class extends fighter class to create opponent to fight
+class enemy extends fighter {
+    debuff = 0;
+    edmgPerRound = 0;
+    etotalDmg = 0;
+    constructor(name,mobility,attack){
+        super(name)
+        name=name;
+        this.mobility = mobility;
+        this.attack = attack; 
+    } 
+    calcDmg(){
+        this.edmgPerRound = Math.floor(Math.random() *((this.attack[1]+1)-this.attack[0] +1))+this.attack[0];
+        // console.log("enemy does", this.dmgPerRound, this.totalDmg)
+        this.etotalDmg += this.edmgPerRound
+        return this.edmgPerRound;    
+    }
+}
+//intiate elements
 function intitate(){
     viewPort= document.querySelector('.viewport');
     heroScreen = document.querySelector('.heroScreen');
@@ -258,6 +350,11 @@ function intitate(){
     battle = document.querySelector('.battle');
     stats = document.querySelector('.stats');
     selection = document.querySelector('.selection')
+    tName = document.querySelector('.tName');
+    tClass = document.querySelector('.tClass');
+    tWeap = document.querySelector('.tWeap');
+    tArm = document.querySelector('.tArm');
+    tHealth = document.querySelector('.tHealth');
 
 }
 
@@ -318,13 +415,18 @@ function loadSaves(){
     console.log('Loading Saves...');
 
 }
-function createHero (){
+function createHero (i){
+    if (i == 'remind'){
+        displayPort.innerHTML = 'You must select a class to continue.'
+        }
     let warBtn = createElement("button", "Warrior", "Warrior", "Warrior", "Warrior" );
     let mageBtn = createElement("button", "Mage", "Mage", "Magician", "Mage" );
     let rgBtn = createElement("button", "Rogue", "Rogue", "Rogue", "Rogue" )
     selection.appendChild(warBtn).addEventListener("click", describeHero);
     selection.appendChild(mageBtn).addEventListener("click", describeHero);
     selection.appendChild(rgBtn).addEventListener("click", describeHero);
+    let ontoSHop = createElement("button", "shop", undefined, "Visit Shop", "shop");
+    selection.appendChild(ontoSHop).addEventListener("click", merchantShop);
 }
 
 function describeHero (event){
@@ -353,9 +455,19 @@ function describeHero (event){
         }
     }
     displayPort.innerHTML = heroDescription[choice].desc;
-    let ontoSHop = createElement("button", )
+    heroSelected.class = heroDescription[choice].name;
+    
 }
 
-function merchShop(){
-
+function merchantShop(){
+    selection.innerHTML = '';
+    if (heroSelected.class == ''){
+        createHero('remind');
+        return;
+    }
+    console.log(heroSelected);
+    tClass.innerHTML= heroSelected.class;
+    document.querySelector('.descrHero').classList.remove('hidden');
+    document.querySelector('.merchantPortal').classList.remove('hidden');
+    // create the shop
 }
