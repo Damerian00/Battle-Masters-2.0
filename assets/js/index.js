@@ -6,7 +6,7 @@
 
 
 //intialized variables and locate html classes
-let viewPort, heroScreen, merchShop, battle, stats, ctext, player, enemyStats, opponent, displayPort, selection,tName, tClass, tWeap, tArm, tHealth;
+let viewPort, heroScreen, merchShop, battle, stats, ctext, player, enemyStats, opponent, displayPort, selection,tName, tClass, tWeap, tArm, tHealth, mPortal;
 
 // Hero Object Template
 let heroSelected = {
@@ -33,7 +33,7 @@ let enemySelected= {
 
 let weaponShop = [
     {
-        "classRestrict" : ["mage"],
+        "classRestrict" : ["Magician"],
         "type" : "Staff",
         "name": "Basic Elemental Staff",
         "attackName" : ["Fire Bolt", "Artic Freeze"],
@@ -43,7 +43,7 @@ let weaponShop = [
         "cost": 0
     },
     {
-        "classRestrict" : ["mage"],
+        "classRestrict" : ["Magician"],
         "type" : "Staff",
         "name": "Basic Nature Staff",
         "attackName" : ["Wisp Bolt", "Leech Health"],
@@ -53,7 +53,7 @@ let weaponShop = [
         "cost": 0
     },
     {
-        "classRestrict" : ["rogue"],
+        "classRestrict" : ["Rogue"],
         "type" : "Dual Wielding Daggers",
         "name": "Basic Daggers",
         "attackName" : ["Dual Swipe", "Sweet Spot"],
@@ -63,7 +63,7 @@ let weaponShop = [
         "cost": 0
     },
     {
-        "classRestrict" : ["rogue"],
+        "classRestrict" : ["Rogue"],
         "type" : "Bow and Arrow",
         "name": "Wooden Bow",
         "attackName" : ["Basic Shot", "Stunning Shot"],
@@ -73,7 +73,7 @@ let weaponShop = [
         "cost": 0
     },
     {
-        "classRestrict" : ["warrior"],
+        "classRestrict" : ["Warrior"],
         "type" : "Shielded",
         "name": "Stone Mace and Wooden Shield",
         "attackName" : ["Basic Attack", "Shield Bash"],
@@ -83,7 +83,7 @@ let weaponShop = [
         "cost": 0
     },
     {
-        "classRestrict" : ["warrior"],
+        "classRestrict" : ["Warrior"],
         "type" : "Two-Handed",
         "name": "Two-Handed Iron Sword",
         "attackName" : ["Two-handed Swing", "Power Attack"],
@@ -93,27 +93,27 @@ let weaponShop = [
         "cost": 0
     },
     {
-        "classRestrict" : ["mage"],
+        "classRestrict" : ["Magician"],
         "type" : "Staff",
         "name": "Pyro Staff",
         "attackName" : ["Fire Bolt", "Conflagrate"],
         "attackDmg" : [[1,8],[4,6]],
         "bonusDmg" : [[1,3],[0.25,1]],
-        "descr" : "fires fire bolts to build up damage on enemy then when activate sets enemy ablaze per mark of fire for that many turns",
+        "descr" : "fires fire bolts to build up daMagician on enemy then when activate sets enemy ablaze per mark of fire for that many turns",
         "cost": 10
     },
     {
-        "classRestrict" : ["mage"],
+        "classRestrict" : ["Magician"],
         "type" : "Staff",
         "name": "Hydro Staff",
         "attackName" : ["Hyrdo Spray", "Glaciate"],
         "attackDmg" : [[1,6],[4,10]],
         "bonusDmg" : [[1],[0.25,1]],
-        "descr" : "sprays water causing minbor damage that when frozen causes major damage and holds enemy in stasis until it breaks free after certain amount of turns based on marks",
+        "descr" : "sprays water causing minbor daMagician that when frozen causes major daMagician and holds enemy in stasis until it breaks free after certain amount of turns based on marks",
         "cost": 10
     },
     {
-        "classRestrict" : ["mage"],
+        "classRestrict" : ["Magician"],
         "type" : "Staff",
         "name": "Dryad Staff",
         "attackName" : ["Needle Spray", "Entangle"],
@@ -123,7 +123,7 @@ let weaponShop = [
         "cost": 10
     },
     {
-        "classRestrict" : ["mage"],
+        "classRestrict" : ["Magician"],
         "type" : "Staff",
         "name": "Lich Staff",
         "attackName" : ["Acid Spray", "Life Steal"],
@@ -133,7 +133,7 @@ let weaponShop = [
         "cost": 10
     },    
     {
-        "classRestrict" : ["rogue"],
+        "classRestrict" : ["Rogue"],
         "type" : "Dual Wielding Daggers",
         "name": "+1 Daggers",
         "attackName" : ["Dual Swipe", "Sweet Spot"],
@@ -143,7 +143,7 @@ let weaponShop = [
         "cost": 10
     },
     {
-        "classRestrict" : ["rogue"],
+        "classRestrict" : ["Rogue"],
         "type" : "Bow and Arrow",
         "name": "Composite Bow",
         "attackName" : ["Basic Shot", "Stunning Shot"],
@@ -155,7 +155,7 @@ let weaponShop = [
 ];
 let armorShop = [
     {
-        "classRestrict" : ["mage","rogue","warrior"],
+        "classRestrict" : ["Magician","Rogue","Warrior"],
         "type" : "Clothing",
         "name": "Basic Clothing",
         "Defense" : 0,
@@ -164,7 +164,7 @@ let armorShop = [
 
     },
     {
-        "classRestrict" : ["mage"],
+        "classRestrict" : ["Magician"],
         "type" : "Clothing",
         "name": "Apprentice Robe",
         "Defense" : 1,
@@ -173,7 +173,7 @@ let armorShop = [
 
     },
     {
-        "classRestrict" : ["mage"],
+        "classRestrict" : ["Magician"],
         "type" : "Clothing",
         "name": "Mobility Robe",
         "Defense" : 0,
@@ -182,7 +182,7 @@ let armorShop = [
 
     }, 
     {
-        "classRestrict" : ["mage"],
+        "classRestrict" : ["Magician"],
         "type" : "Clothing",
         "name": "Bulwark Robe",
         "Defense" : 2,
@@ -191,7 +191,7 @@ let armorShop = [
 
     },
     {
-        "classRestrict" : ["mage"],
+        "classRestrict" : ["Magician"],
         "type" : "Clothing",
         "name": "Master Robe",
         "Defense" : 5,
@@ -200,7 +200,7 @@ let armorShop = [
 
     },
     {
-        "classRestrict" : ["rogue","warrior"],
+        "classRestrict" : ["Rogue","Warrior"],
         "type" : "Light Armor",
         "name": "Leather Vest",
         "Defense" : 3,
@@ -209,7 +209,7 @@ let armorShop = [
 
     },
     {
-        "classRestrict" : ["rogue","warrior"],
+        "classRestrict" : ["Rogue","Warrior"],
         "type" : "Light Armor",
         "name": "Leather Tunic",
         "Defense" : 4,
@@ -218,7 +218,7 @@ let armorShop = [
 
     },
     {
-        "classRestrict" : ["warrior"],
+        "classRestrict" : ["Warrior"],
         "type" : "Generic Heavy Armor",
         "name": "Iron Armor",
         "Defense" : 4,
@@ -227,7 +227,7 @@ let armorShop = [
 
     },
     {
-        "classRestrict" : ["warrior"],
+        "classRestrict" : ["Warrior"],
         "type" : "Heavy Armor",
         "name": "Chain Mail Armor",
         "Defense" : 5,
@@ -236,7 +236,7 @@ let armorShop = [
 
     },
     {
-        "classRestrict" : ["warrior"],
+        "classRestrict" : ["Warrior"],
         "type" : "Heavy Armor",
         "name": "Steel Armor",
         "Defense" : 6,
@@ -355,7 +355,7 @@ function intitate(){
     tWeap = document.querySelector('.tWeap');
     tArm = document.querySelector('.tArm');
     tHealth = document.querySelector('.tHealth');
-
+    mPortal= document.querySelector('.merchantPortal')
 }
 
 function addButtons(id, txt, val){
@@ -420,10 +420,10 @@ function createHero (i){
         displayPort.innerHTML = 'You must select a class to continue.'
         }
     let warBtn = createElement("button", "Warrior", "Warrior", "Warrior", "Warrior" );
-    let mageBtn = createElement("button", "Mage", "Mage", "Magician", "Mage" );
+    let MagicianBtn = createElement("button", "Magician", "Magician", "Magician", "Magician" );
     let rgBtn = createElement("button", "Rogue", "Rogue", "Rogue", "Rogue" )
     selection.appendChild(warBtn).addEventListener("click", describeHero);
-    selection.appendChild(mageBtn).addEventListener("click", describeHero);
+    selection.appendChild(MagicianBtn).addEventListener("click", describeHero);
     selection.appendChild(rgBtn).addEventListener("click", describeHero);
     let ontoSHop = createElement("button", "shop", undefined, "Visit Shop", "shop");
     selection.appendChild(ontoSHop).addEventListener("click", merchantShop);
@@ -436,15 +436,15 @@ function describeHero (event){
     [
         {
             "name" : "Warrior",
-            "desc" : `Warriors are the best at defense and can equip the heaviest of armors they can also provide some pretty good offensive damage with their weapons. They have 2 weapon proficiencies to choose from: One handed weapon and shield or a two-handed weapon. They can also wear all armor types.` 
+            "desc" : `Warriors are the best at defense and can equip the heaviest of armors they can also provide some pretty good offensive daMagician with their weapons. They have 2 weapon proficiencies to choose from: One handed weapon and shield or a two-handed weapon. They can also wear all armor types.` 
         },
         {
-            "name" : "Mage",
+            "name" : "Magician",
             "desc" : `Magicians don't wear armor, however, with the powerful magic they wield it sort of makes up for that minor indiscretion. They can specialize in one of two schools of magic:  elemental or nature to wreak havoc on their foes.` 
         },
         {
             "name" : "Rogue",
-            "desc" : `Rogues provide a good balance between the two. They can don light armors, and They can specialize in dual daggers or bow and arrow to deliver precise attacks that may cause lethal damage to their opponents.` 
+            "desc" : `Rogues provide a good balance between the two. They can don light armors, and They can specialize in dual daggers or bow and arrow to deliver precise attacks that may cause lethal daMagician to their opponents.` 
         }
 
     ]
@@ -470,4 +470,23 @@ function merchantShop(){
     document.querySelector('.descrHero').classList.remove('hidden');
     document.querySelector('.merchantPortal').classList.remove('hidden');
     // create the shop
+    addArmors()
+}
+// function to add armors based on what is in the armor shop
+function addArmors (){
+    let container = createElement("div","armorContainer")
+    mPortal.appendChild(container);
+    // filters armor array by which classs can use it
+    let filteredArmor = armorShop.filter((item) => item.classRestrict.includes(heroSelected.class))
+    // creates the items in the shop: includes name, stats, and price
+    console.log(filteredArmor)
+    for (let i=0;i<filteredArmor.length; i++){
+        let item = (createElement("div", "item"));
+        item.appendChild(createElement("header")).appendChild(createElement("p", undefined, undefined, "Name: ")).appendChild(createElement("p",undefined,undefined,filteredArmor[i].name));
+        item.appendChild(createElement("section")).appendChild(createElement("p", undefined, undefined, `Defense: ${filteredArmor[i].Defense}` )).appendChild(createElement("p", undefined, undefined, `Mobility: ${filteredArmor[i].mobility}`)).appendChild(createElement("p", undefined, undefined, `Cost: ${filteredArmor[i].cost}`))
+        item.appendChild(createElement("footer")).appendChild(createElement("button", undefined, undefined, `Puchase ${filteredArmor[i].name}`, filteredArmor[i].name));
+        container.appendChild(item);
+              
+    }
+
 }

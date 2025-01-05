@@ -38,6 +38,27 @@
         padding: .1em;
     }
 }
+.armorContainer{
+    display: flex;
+    flex-wrap: wrap;
+}
+.item{
+    border: 2px solid red;
+    display: flex;
+    flex-direction: column;
+    header{
+        display: flex;
+        justify-content: space-evenly;
+        p{
+            display: inline-block;
+        }
+    }
+    section{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
 .userInterface{
    
 }
