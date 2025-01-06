@@ -6,7 +6,7 @@
 
 
 //intialized variables and locate html classes
-let viewPort, heroScreen, merchShop, battle, stats, ctext, player, enemyStats, opponent, displayPort, selection,tName, tClass, tWeap, tArm, tHealth, mPortal;
+let viewPort, heroScreen, merchShop, battle, stats, ctext, player, enemyStats, opponent, displayPort, selection,tName, tClass, tWeap, tArm, tHealth, mPortal, gold;
 
 // Hero Object Template
 let heroSelected = {
@@ -20,7 +20,8 @@ let heroSelected = {
     currentWeapon: [],
     // list of weapon objects player owns
     weapons : [],
-    health: 100
+    health: 100,
+    gc: 0
 }
 
 // Enemy Object Template
@@ -283,6 +284,7 @@ class hero extends fighter {
         this.armor = armor;
         this.attack1 = attack1;
         this.attack2 = attack2;
+        this.gc = this.gc;
     }
     getHeroClass(){
         return this.heroClass;
@@ -322,6 +324,12 @@ class hero extends fighter {
             return this.bonusDmg;
         }
     }
+    getGold(){
+        return this.gc;
+    }
+    addGold(i){
+        this.gc += i;
+    }
 }
 
 // enemy class extends fighter class to create opponent to fight
@@ -346,7 +354,6 @@ class enemy extends fighter {
 function intitate(){
     viewPort= document.querySelector('.viewport');
     heroScreen = document.querySelector('.heroScreen');
-    merchShop = document.querySelector('.merchantPortal');
     battle = document.querySelector('.battle');
     stats = document.querySelector('.stats');
     selection = document.querySelector('.selection')
@@ -356,17 +363,10 @@ function intitate(){
     tArm = document.querySelector('.tArm');
     tHealth = document.querySelector('.tHealth');
     mPortal= document.querySelector('.merchantPortal')
+    gold = document.querySelector('.gold')
 }
 
-function addButtons(id, txt, val){
-    let button = document.createElement("button")
-    let node = document.createTextNode(txt)
-    button.appendChild(node);
-    button.setAttribute("id", id);
-    button.setAttribute("value", val);
-    return button;
-}
-
+// function to create elements takes params element, class, id, text, value
 function createElement(el, c, i, txt, val){
     let element = document.createElement(el);
     if (c !== undefined){
@@ -409,7 +409,8 @@ function choosePlayer(){
     //create new
     displayPort = document.querySelector('.displayPort');
     displayPort.innerHTML= `Please choose a Hero Class. You have three options to choose from: Warrior, Magician, and a Rogue. Please click on each option to view the class description and then click on visit shop to make your selection and advance to the merchant shop where you will choose your armaments.`;
-    
+    document.querySelector(".descrHero").appendChild(createElement("button", "openShopBtn", undefined, "Open Shop")).addEventListener("click", toggleShop);
+    document.querySelector(".openShopBtn").classList.add("hidden");
 }
 function loadSaves(){
     console.log('Loading Saves...');
@@ -419,6 +420,7 @@ function createHero (i){
     if (i == 'remind'){
         displayPort.innerHTML = 'You must select a class to continue.'
         }
+    
     let warBtn = createElement("button", "Warrior", "Warrior", "Warrior", "Warrior" );
     let MagicianBtn = createElement("button", "Magician", "Magician", "Magician", "Magician" );
     let rgBtn = createElement("button", "Rogue", "Rogue", "Rogue", "Rogue" )
@@ -427,6 +429,7 @@ function createHero (i){
     selection.appendChild(rgBtn).addEventListener("click", describeHero);
     let ontoSHop = createElement("button", "shop", undefined, "Visit Shop", "shop");
     selection.appendChild(ontoSHop).addEventListener("click", merchantShop);
+    
 }
 
 function describeHero (event){
@@ -436,7 +439,7 @@ function describeHero (event){
     [
         {
             "name" : "Warrior",
-            "desc" : `Warriors are the best at defense and can equip the heaviest of armors they can also provide some pretty good offensive daMagician with their weapons. They have 2 weapon proficiencies to choose from: One handed weapon and shield or a two-handed weapon. They can also wear all armor types.` 
+            "desc" : `Warriors are the best at defense and can equip the heaviest of armors they can also provide some pretty good offensive damage with their weapons. They have 2 weapon proficiencies to choose from: One handed weapon and shield or a two-handed weapon. They can also wear all armor types.` 
         },
         {
             "name" : "Magician",
@@ -456,37 +459,70 @@ function describeHero (event){
     }
     displayPort.innerHTML = heroDescription[choice].desc;
     heroSelected.class = heroDescription[choice].name;
-    
+    heroSelected.gc = 0;
+    gold.innerHTML = heroSelected.gc;
 }
-
+// check to see if selection was made if not exit function then load up the items in the shop through 2 functions.
 function merchantShop(){
     selection.innerHTML = '';
+    mPortal.innerHTML = '';
     if (heroSelected.class == ''){
         createHero('remind');
         return;
     }
-    console.log(heroSelected);
     tClass.innerHTML= heroSelected.class;
     document.querySelector('.descrHero').classList.remove('hidden');
-    document.querySelector('.merchantPortal').classList.remove('hidden');
+    mPortal.classList.remove('hidden');
     // create the shop
-    addArmors()
+    addArmors();
+    addWeapons();
+    mPortal.appendChild(createElement("button", "openShopBtn", undefined, "Close Shop")).addEventListener('click', toggleShop);
+
 }
 // function to add armors based on what is in the armor shop
 function addArmors (){
-    let container = createElement("div","armorContainer")
+    let container = createElement("div","armorContainer");
     mPortal.appendChild(container);
     // filters armor array by which classs can use it
-    let filteredArmor = armorShop.filter((item) => item.classRestrict.includes(heroSelected.class))
+    let filteredArmor = armorShop.filter((item) => item.classRestrict.includes(heroSelected.class));
     // creates the items in the shop: includes name, stats, and price
-    console.log(filteredArmor)
     for (let i=0;i<filteredArmor.length; i++){
-        let item = (createElement("div", "item"));
-        item.appendChild(createElement("header")).appendChild(createElement("p", undefined, undefined, "Name: ")).appendChild(createElement("p",undefined,undefined,filteredArmor[i].name));
+        let item = createElement("div", "item");
+        item.appendChild(createElement("header")).appendChild(createElement("p", undefined, undefined, `Name: ${filteredArmor[i].name}`));
         item.appendChild(createElement("section")).appendChild(createElement("p", undefined, undefined, `Defense: ${filteredArmor[i].Defense}` )).appendChild(createElement("p", undefined, undefined, `Mobility: ${filteredArmor[i].mobility}`)).appendChild(createElement("p", undefined, undefined, `Cost: ${filteredArmor[i].cost}`))
         item.appendChild(createElement("footer")).appendChild(createElement("button", undefined, undefined, `Puchase ${filteredArmor[i].name}`, filteredArmor[i].name));
-        container.appendChild(item);
-              
+        container.appendChild(item);        
     }
-
+}
+function addWeapons (){
+    let container = createElement("div", "wepContainer");
+    mPortal.appendChild(container);
+    let filteredWeps = weaponShop.filter((item)=> item.classRestrict.includes(heroSelected.class));
+    for (let i=0; i<filteredWeps.length;i++){
+        let item = createElement("div", "item");
+        item.appendChild(createElement("header")).appendChild(createElement("p", undefined, undefined, `Name: ${filteredWeps[i].name}`));
+        item.appendChild(createElement("section")).appendChild(createElement("p", undefined, undefined, `Description: ${filteredWeps[i].descr}`)).appendChild(createElement("p", undefined, undefined, `Attack 1: ${filteredWeps[i].attackName[0]}` )).appendChild(createElement("p", undefined, undefined, `Attack 2: ${filteredWeps[i].attackName[1]}`)).appendChild(createElement("p", undefined, undefined, `Cost: ${filteredWeps[i].cost}`))
+        item.appendChild(createElement("footer")).appendChild(createElement("button", undefined, undefined, `Puchase ${filteredWeps[i].name}`, filteredWeps[i].name));
+        container.appendChild(item);   
+    }
+}
+function toggleShop(){
+  let o = document.querySelector(".openShopBtn")
+ console.log();
+    if(mPortal.classList.contains("hidden")){
+        mPortal.classList.remove('hidden');
+        o.classList.add("hidden");
+        merchantShop();
+    }else{
+     mPortal.classList.add("hidden");
+        o.classList.remove("hidden");
+    }
+}
+function openShop (){
+    mPortal.classList.remove('hidden');
+    document.querySelector(".openShopBtn").classList.add("hidden");
+    merchantShop();
+}
+function closeShop(){
+    
 }
