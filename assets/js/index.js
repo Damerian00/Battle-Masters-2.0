@@ -220,7 +220,7 @@ let armorShop = [
     },
     {
         "classRestrict" : ["Warrior"],
-        "type" : "Generic Heavy Armor",
+        "type" : "Heavy Armor",
         "name": "Iron Armor",
         "Defense" : 4,
         "mobility" : 0,
@@ -284,14 +284,18 @@ class hero extends fighter {
         this.armor = armor;
         this.attack1 = attack1;
         this.attack2 = attack2;
-        this.gc = this.gc;
+        this.gc = gc;
+        this.armorList= armorList;
+        this.wepList = wepList;
+
     }
     getHeroClass(){
         return this.heroClass;
     }
-    getArmor(){
+    getCurrentEquipedArmor(){
         return this.armor.name;
     }
+
     addArmorDefense(amt){
         this.armor.amount += amt;
     }
@@ -429,7 +433,7 @@ function createHero (i){
     selection.appendChild(rgBtn).addEventListener("click", describeHero);
     let ontoSHop = createElement("button", "shop", undefined, "Visit Shop", "shop");
     selection.appendChild(ontoSHop).addEventListener("click", merchantShop);
-    
+    inputName();
 }
 
 function describeHero (event){
@@ -459,6 +463,7 @@ function describeHero (event){
     }
     displayPort.innerHTML = heroDescription[choice].desc;
     heroSelected.class = heroDescription[choice].name;
+    tName.innerHTML = heroSelected.name;
     heroSelected.gc = 0;
     gold.innerHTML = heroSelected.gc;
 }
@@ -470,6 +475,7 @@ function merchantShop(){
         createHero('remind');
         return;
     }
+    
     tClass.innerHTML= heroSelected.class;
     document.querySelector('.descrHero').classList.remove('hidden');
     mPortal.classList.remove('hidden');
@@ -480,31 +486,98 @@ function merchantShop(){
 
 }
 // function to add armors based on what is in the armor shop
+
+/*
+map of objects in array for name
+const names = array.map(obj => obj.name);
+*/
 function addArmors (){
+    let currentInventory=[];
+    let filteredArmor=[];
+    if (heroSelected.armors.length >= 1){
+        currentInventory = filterArray(armorShop, "name", heroSelected.armors, true);
+        console.log('current Arr', currentInventory);
+        filteredArmor = filterArray(currentInventory, "classRestrict", heroSelected.class);
+    }else{
+        filteredArmor = filterArray(armorShop, "classRestrict", heroSelected.class);
+    }
+    console.log('filtered Armor: ', filteredArmor)
     let container = createElement("div","armorContainer");
     mPortal.appendChild(container);
     // filters armor array by which classs can use it
-    let filteredArmor = armorShop.filter((item) => item.classRestrict.includes(heroSelected.class));
     // creates the items in the shop: includes name, stats, and price
     for (let i=0;i<filteredArmor.length; i++){
         let item = createElement("div", "item");
         item.appendChild(createElement("header")).appendChild(createElement("p", undefined, undefined, `Name: ${filteredArmor[i].name}`));
         item.appendChild(createElement("section")).appendChild(createElement("p", undefined, undefined, `Defense: ${filteredArmor[i].Defense}` )).appendChild(createElement("p", undefined, undefined, `Mobility: ${filteredArmor[i].mobility}`)).appendChild(createElement("p", undefined, undefined, `Cost: ${filteredArmor[i].cost}`))
-        item.appendChild(createElement("footer")).appendChild(createElement("button", undefined, undefined, `Puchase ${filteredArmor[i].name}`, filteredArmor[i].name));
+        item.appendChild(createElement("footer")).appendChild(createElement("button", undefined, undefined, `Puchase ${filteredArmor[i].name}`, filteredArmor[i].name)).addEventListener("click", addtoInventory);
         container.appendChild(item);        
     }
 }
+
 function addWeapons (){
+    let currentInventory =[];
+    let filteredWeps =[];
+    if (heroSelected.weapons.length > 0){
+        currentInventory = filterArray(weaponShop, "name", heroSelected.weapons, true);
+        console.log('current Arr', currentInventory);
+        filteredWeps = filterArray(currentInventory, "classRestrict", heroSelected.class);
+    }else{
+        filteredWeps = filterArray(weaponShop, "classRestrict", heroSelected.class);
+    }
     let container = createElement("div", "wepContainer");
     mPortal.appendChild(container);
-    let filteredWeps = weaponShop.filter((item)=> item.classRestrict.includes(heroSelected.class));
     for (let i=0; i<filteredWeps.length;i++){
         let item = createElement("div", "item");
         item.appendChild(createElement("header")).appendChild(createElement("p", undefined, undefined, `Name: ${filteredWeps[i].name}`));
         item.appendChild(createElement("section")).appendChild(createElement("p", undefined, undefined, `Description: ${filteredWeps[i].descr}`)).appendChild(createElement("p", undefined, undefined, `Attack 1: ${filteredWeps[i].attackName[0]}` )).appendChild(createElement("p", undefined, undefined, `Attack 2: ${filteredWeps[i].attackName[1]}`)).appendChild(createElement("p", undefined, undefined, `Cost: ${filteredWeps[i].cost}`))
-        item.appendChild(createElement("footer")).appendChild(createElement("button", undefined, undefined, `Puchase ${filteredWeps[i].name}`, filteredWeps[i].name));
+        item.appendChild(createElement("footer")).appendChild(createElement("button", undefined, undefined, `Puchase ${filteredWeps[i].name}`, filteredWeps[i].name)).addEventListener("click", addtoInventory);
         container.appendChild(item);   
     }
+}
+
+// function to filter object arrays passed into will check up to 2 arrays for the filterd parameter p
+function filterArray(arr, prop, p, loop){
+    let newArr;
+    if (loop){
+        let temp = [];
+        newArr = [];
+        for (let j = 0; j<p.length;j++){
+            temp.push(p[j].name)
+            // console.log(temp);
+        }
+        for (let i=0; i<arr.length;i++){
+        if (temp.includes(arr[i].name)){
+            'do nothing'
+        }else{
+            newArr.push(arr[i]);
+        }              
+    }
+
+    }else{
+        newArr = arr.filter((item)=> item[prop].includes(p))
+    }
+    console.log('newly created array ',newArr);
+    return newArr;
+}
+
+function addtoInventory(e){
+    let event = e.target;
+    let totalMerch = armorShop.concat(weaponShop);
+    for (i=0; i<totalMerch.length;i++){
+        if (totalMerch[i].name == event.value){
+            if (Object.keys(totalMerch[i]).includes("Defense")){
+                heroSelected.armors.push(totalMerch[i]);
+                console.log('current armors ', heroSelected.armors);
+            }else{
+                heroSelected.weapons.push(totalMerch[i]);
+                console.log('current weapons', heroSelected.weapons);
+            }
+            merchantShop()
+            return;
+        }
+    }
+
 }
 function toggleShop(){
   let o = document.querySelector(".openShopBtn")
@@ -518,11 +591,24 @@ function toggleShop(){
         o.classList.remove("hidden");
     }
 }
-function openShop (){
-    mPortal.classList.remove('hidden');
-    document.querySelector(".openShopBtn").classList.add("hidden");
-    merchantShop();
+function inputName(){
+    let heroName = prompt("Please enter your player's name", "Player");
+    heroSelected.name = heroName
+    if (heroName !=null && heroName == ''){ 
+            heroSelected.name = "Player";
+    }else{
+        heroSelected.name = heroName;
+    }
+    
 }
-function closeShop(){
+// weapon inventory w armor inventory a
+function loadInventory(w,a){
+
+}
+function toggleInventory(){
+
+}
+// access player inventory to equip gear for next fight
+function gearUp(){
     
 }
