@@ -6,7 +6,7 @@
 
 
 //intialized variables and locate html classes
-let viewPort, heroScreen, merchShop, battle, stats, ctext, player, enemyStats, opponent, displayPort, selection,tName, tClass, tWeap, tArm, tHealth, mPortal, gold;
+let viewPort, heroScreen, merchShop, battle, stats, ctext, player, enemyStats, opponent, displayPort, selection,tName, tClass, tWeap, tArm, tHealth, mPortal, gold, invContainer, invPortal;
 
 // Hero Object Template
 let heroSelected = {
@@ -366,8 +366,9 @@ function intitate(){
     tWeap = document.querySelector('.tWeap');
     tArm = document.querySelector('.tArm');
     tHealth = document.querySelector('.tHealth');
-    mPortal= document.querySelector('.merchantPortal')
-    gold = document.querySelector('.gold')
+    invPortal = document.querySelector('.invPortal');
+    mPortal= document.querySelector('.merchantPortal');
+    gold = document.querySelector('.gold');
 }
 
 // function to create elements takes params element, class, id, text, value
@@ -415,6 +416,8 @@ function choosePlayer(){
     displayPort.innerHTML= `Please choose a Hero Class. You have three options to choose from: Warrior, Magician, and a Rogue. Please click on each option to view the class description and then click on visit shop to make your selection and advance to the merchant shop where you will choose your armaments.`;
     document.querySelector(".descrHero").appendChild(createElement("button", "openShopBtn", undefined, "Open Shop")).addEventListener("click", toggleShop);
     document.querySelector(".openShopBtn").classList.add("hidden");
+    document.querySelector('.descrHero').appendChild(createElement("button", "openInvBtn", undefined, "Open Inventory"))
+    document.querySelector('.openInvBtn').addEventListener("click", toggleInventory)
 }
 function loadSaves(){
     console.log('Loading Saves...');
@@ -466,6 +469,7 @@ function describeHero (event){
     tName.innerHTML = heroSelected.name;
     heroSelected.gc = 0;
     gold.innerHTML = heroSelected.gc;
+    tHealth.innerHTML = 100;
 }
 // check to see if selection was made if not exit function then load up the items in the shop through 2 functions.
 function merchantShop(){
@@ -479,29 +483,24 @@ function merchantShop(){
     tClass.innerHTML= heroSelected.class;
     document.querySelector('.descrHero').classList.remove('hidden');
     mPortal.classList.remove('hidden');
+    invContainer = createElement("div","invContainer");
     // create the shop
     addArmors();
     addWeapons();
     mPortal.appendChild(createElement("button", "openShopBtn", undefined, "Close Shop")).addEventListener('click', toggleShop);
 
 }
-// function to add armors based on what is in the armor shop
+// function to add armors based on what is in the armor shop or players inventory
 
-/*
-map of objects in array for name
-const names = array.map(obj => obj.name);
-*/
 function addArmors (){
     let currentInventory=[];
     let filteredArmor=[];
     if (heroSelected.armors.length >= 1){
         currentInventory = filterArray(armorShop, "name", heroSelected.armors, true);
-        console.log('current Arr', currentInventory);
         filteredArmor = filterArray(currentInventory, "classRestrict", heroSelected.class);
     }else{
         filteredArmor = filterArray(armorShop, "classRestrict", heroSelected.class);
     }
-    console.log('filtered Armor: ', filteredArmor)
     let container = createElement("div","armorContainer");
     mPortal.appendChild(container);
     // filters armor array by which classs can use it
@@ -514,13 +513,12 @@ function addArmors (){
         container.appendChild(item);        
     }
 }
-
+// adds weapons to shop based on what's in weapon shop and player inventory
 function addWeapons (){
     let currentInventory =[];
     let filteredWeps =[];
     if (heroSelected.weapons.length > 0){
         currentInventory = filterArray(weaponShop, "name", heroSelected.weapons, true);
-        console.log('current Arr', currentInventory);
         filteredWeps = filterArray(currentInventory, "classRestrict", heroSelected.class);
     }else{
         filteredWeps = filterArray(weaponShop, "classRestrict", heroSelected.class);
@@ -568,11 +566,10 @@ function addtoInventory(e){
         if (totalMerch[i].name == event.value){
             if (Object.keys(totalMerch[i]).includes("Defense")){
                 heroSelected.armors.push(totalMerch[i]);
-                console.log('current armors ', heroSelected.armors);
             }else{
                 heroSelected.weapons.push(totalMerch[i]);
-                console.log('current weapons', heroSelected.weapons);
             }
+            loadInventory();
             merchantShop()
             return;
         }
@@ -601,14 +598,59 @@ function inputName(){
     }
     
 }
-// weapon inventory w armor inventory a
-function loadInventory(w,a){
-
+// weapon inventory = w; armor inventory = a
+function loadInventory(){
+    invPortal.innerHTML = '';
+    invContainer.innerHTML = '';
+    invPortal.appendChild(invContainer);
+    for (let a = 0; a<heroSelected.armors.length;a++){
+        let item = createElement("div", "item");
+        item.appendChild(createElement("header")).appendChild(createElement("p", undefined, undefined, `Name: ${heroSelected.armors[a].name}`));
+        item.appendChild(createElement("section")).appendChild(createElement("p", undefined, undefined, `Defense: ${heroSelected.armors[a].Defense}` )).appendChild(createElement("p", undefined, undefined, `Mobility: ${heroSelected.armors[a].mobility}`)).appendChild(createElement("p", undefined, undefined, `Cost: ${heroSelected.armors[a].cost}`))
+        item.appendChild(createElement("footer")).appendChild(createElement("button", undefined, undefined, `Equip ${heroSelected.armors[a].name}`, heroSelected.armors[a].name)).addEventListener("click", gearUp);
+        invContainer.appendChild(item);
+    } 
+    for (let w = 0; w<heroSelected.weapons.length; w++){
+        let item = createElement("div", "item");
+        item.appendChild(createElement("header")).appendChild(createElement("p", undefined, undefined, `Name: ${heroSelected.weapons[w].name}`));
+        item.appendChild(createElement("section")).appendChild(createElement("p", undefined, undefined, `Description: ${heroSelected.weapons[w].descr}`)).appendChild(createElement("p", undefined, undefined, `Attack 1: ${heroSelected.weapons[w].attackName[0]}` )).appendChild(createElement("p", undefined, undefined, `Attack 2: ${heroSelected.weapons[w].attackName[w]}`)).appendChild(createElement("p", undefined, undefined, `Cost: ${heroSelected.weapons[w].cost}`))
+        item.appendChild(createElement("footer")).appendChild(createElement("button", undefined, undefined, `Equip ${heroSelected.weapons[w].name}`, heroSelected.weapons[w].name)).addEventListener("click", gearUp);
+        invContainer.appendChild(item);
+    }
+    invContainer.appendChild(createElement("button", "closeInvBtn", undefined, "Close Inventory", "Close Inventory")).addEventListener("click", toggleInventory);
+    invContainer.appendChild(createElement("button", undefined, undefined, "Choose Opponent")).addEventListener("click" , opponentSelect);
 }
 function toggleInventory(){
+    if (invPortal.classList.contains("hidden")){
+        console.log("open");
+        invPortal.classList.remove("hidden");
+    }else{
+        invPortal.classList.add("hidden");
+    }
 
+   
 }
 // access player inventory to equip gear for next fight
-function gearUp(){
-    
+function gearUp(e){
+    let event = e.target;
+    let totalInv = heroSelected.armors.concat(heroSelected.weapons);
+    for (i=0; i<totalInv.length;i++){
+        if (totalInv[i].name == event.value){
+            if (Object.keys(totalInv[i]).includes("Defense")){
+                heroSelected.currentArmor = totalInv[i];
+            }else{
+                heroSelected.currentWeapon = totalInv[i];
+            }
+            tArm.innerHTML = heroSelected.currentArmor.name != undefined?heroSelected.currentArmor.name: "None Selected";
+            tWeap.innerHTML = heroSelected.currentWeapon.name != undefined? heroSelected.currentWeapon.name: "None Selected";
+            return;
+        }
+    }
+}
+
+function opponentSelect (){
+    document.querySelector('.openShopBtn').classList.add("hidden");
+    invPortal.classList.add('hidden');
+    document.querySelector('.openInvBtn').classList.add("hidden");
+    console.log("choose your enemy");
 }
